@@ -1,0 +1,19 @@
+.welcomeBannerThemeContainer {
+    -fx-background-image: url("../image/banner_theme.png");
+    -fx-border-image-repeat: no-repeat;
+    -fx-background-size: cover;
+}
+
+.progressBarAppLoading {
+    -fx-accent: #197a09;
+}
+
+.appThemeContainer {
+    -fx-background-image: url("../image/banner_theme.png");
+    -fx-border-image-repeat: no-repeat;
+    -fx-background-size: contain;
+}
+
+.textArea *.text {
+    -fx-text-alignment: center;
+}
