@@ -20,7 +20,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafx.controller.MainController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/8.0.162" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafx.controller.MainController">
    <MenuBar>
       <Menu mnemonicParsing="false" text="%main.menu.language">
          <MenuItem mnemonicParsing="false" onAction="#menuItemLanguagePolish_onAction" text="%main.menu_item.language_polish">
@@ -35,6 +35,13 @@
                   <Image url="@../image/usa_flag.png" />
                </ImageView>
             </graphic></MenuItem>
+         <MenuItem mnemonicParsing="false" onAction="#menuItemLanguageBritishEnglish_onAction" text="%main.menu_item.language_british">
+            <graphic>
+               <ImageView fitHeight="20.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                  <Image url="@../image/gb_flag.png"/>
+               </ImageView>
+            </graphic>
+         </MenuItem>
          <MenuItem mnemonicParsing="false" onAction="#menuItemLanguageGerman_onAction" text="%main.menu_item.language_german">
             <graphic>
                <ImageView fitHeight="20.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
@@ -45,7 +52,7 @@
          <MenuItem mnemonicParsing="false" onAction="#menuItemLanguageFrench_onAction" text="%main.menu_item.language_french">
             <graphic>
                <ImageView fitHeight="20.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                  <Image url="@../image/fr_flag.png"/>
+                  <Image url="@../image/fr_flag.png" />
                </ImageView>
             </graphic>
          </MenuItem>
@@ -286,7 +293,7 @@
                         </font>
                      </Label>
                      <Region VBox.vgrow="ALWAYS" />
-                     <Label prefHeight="25.0" prefWidth="2000.0" style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 5, 0, 4, 4);" text="%main.label.price" textFill="WHITE">
+                     <Label fx:id="labelDetailsPriceWithCurrency" prefHeight="25.0" prefWidth="2000.0" style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 5, 0, 4, 4);" text="%main.label.price" textFill="WHITE">
                         <font>
                            <Font size="16.0" />
                         </font>
@@ -397,7 +404,7 @@
                      </HBox>
                      <Region VBox.vgrow="ALWAYS" />
                      <HBox alignment="TOP_CENTER" prefHeight="29.0" prefWidth="254.0">
-                        <Label prefHeight="17.0" prefWidth="200.0" text="%main.label.price" textFill="WHITE">
+                        <Label fx:id="labelAddPriceWithCurrency" prefHeight="17.0" prefWidth="200.0" text="%main.label.price" textFill="WHITE">
                            <HBox.margin>
                               <Insets top="13.0" />
                            </HBox.margin>

@@ -33,7 +33,7 @@ public class Main extends Application {
         try {
             Main.mainStage = primaryStage;
             Preferences pref = Preferences.userRoot();
-            Locale.setDefault(new Locale(pref.get("games_library_locale", "en_US")));
+            Locale.setDefault(new Locale(pref.get("games_library_locale", "en-US")));
             loader.setLocation(getClass().getClassLoader().getResource("fxml/welcome_banner.fxml"));
             ResourceBundle resourceBundle = ResourceBundle.getBundle("bundles.messages");
             loader.setResources(resourceBundle);

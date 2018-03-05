@@ -55,7 +55,7 @@ public class WelcomeBannerController implements Initializable {
                 FXMLLoader loader = new FXMLLoader();
                 try {
                     Preferences pref = Preferences.userRoot();
-                    Locale.setDefault(new Locale(pref.get("games_library_locale", "en_US")));
+                    Locale.setDefault(new Locale(pref.get("games_library_locale", "en-US")));
                     loader.setLocation(getClass().getClassLoader().getResource("fxml/main.fxml"));
                     ResourceBundle resourceBundle = ResourceBundle.getBundle("bundles.messages");
                     loader.setResources(resourceBundle);

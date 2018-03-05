@@ -69,8 +69,8 @@ public class MainController implements Initializable {
     private Label labelDetailsTitle, labelDetailsProducer, labelDetailsPublisher, labelDetailsReleaseDate,
             labelDetailsPrice, labelAddTitle, labelAddProducer, labelAddPublisher, labelAddReleaseDate, labelAddPrice,
             labelAddFrontCover, labelStatisticsNumberOfGames, labelStatisticsTotalValueOfLibrary,
-            labelStatisticsMostExpensiveGameTitle, labelStatisticsMostExpensiveGamePrice,
-            labelStatisticsCheapestGameTitle, labelStatisticsCheapestGamePrice;
+            labelStatisticsMostExpensiveGameTitle, labelStatisticsMostExpensiveGamePrice, labelAddPriceWithCurrency,
+            labelStatisticsCheapestGameTitle, labelStatisticsCheapestGamePrice, labelDetailsPriceWithCurrency;
     @FXML
     private ImageView imageViewDetailsGamePicture, imageViewAddFrontCover, imageViewStatisticsCheapestGame,
             imageViewStatisticsMostExpensiveGame;
@@ -123,11 +123,17 @@ public class MainController implements Initializable {
         imageViewDetailsGamePicture.fitWidthProperty().setValue(0);
 
         Locale.setDefault(new Locale(pref
-                .get("games_library_locale", "en_US")));
-        numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
+                .get("games_library_locale", "en-US")));
+        numberFormat = NumberFormat.getCurrencyInstance(Locale.forLanguageTag(pref
+                .get("games_library_locale", "en-US")));
         decimalFormat = (DecimalFormat) numberFormat;
-        numberFormat = NumberFormat.getCurrencyInstance(Locale.ENGLISH);
         decimalFormat.applyPattern("##.##");
+
+        tableColumnPrice.setText(tableColumnPrice.getText() + " [" + numberFormat.getCurrency().getSymbol() + "]");
+        labelDetailsPriceWithCurrency.setText(labelDetailsPriceWithCurrency.getText() + " [" +
+                numberFormat.getCurrency().getSymbol() + "]:");
+        labelAddPriceWithCurrency.setText(labelAddPriceWithCurrency.getText() + " [" +
+                numberFormat.getCurrency().getSymbol() + "]:");
     }
 
     @FXML
@@ -172,7 +178,8 @@ public class MainController implements Initializable {
                 calendar.set(Calendar.DAY_OF_MONTH, localDate.getDayOfMonth());
                 Date releaseDate = calendar.getTime();
 
-                Number number = numberFormat.parse(textFieldAddPrice.getText());
+                NumberFormat format = NumberFormat.getInstance(new Locale(pref.get("games_library_locale", "en-US")));
+                Number number = format.parse(textFieldAddPrice.getText());
                 Double doubleValue = number.doubleValue();
 
                 Game game = new Game(textFieldAddTitle.getText(), textFieldAddProducer.getText(), textFieldAddPublisher.getText(),
@@ -186,6 +193,7 @@ public class MainController implements Initializable {
                 clearAddGameComponents(false);
                 fillStatisticsComponents();
             } catch (ParseException e) {
+                e.printStackTrace();
                 customMessageBox.showMessageBox(Alert.AlertType.WARNING, resourceBundle.getString("alert.warning.title"),
                         resourceBundle.getString("alert.warning.header.add_game"),
                         resourceBundle.getString("alert.warning.context.add_game.price_parse_error"))
@@ -289,30 +297,36 @@ public class MainController implements Initializable {
 
     @FXML
     void menuItemLanguageAmericanEnglish_onAction() {
-        pref.put("games_library_locale", "en_US");
-
-        Locale.setDefault(new Locale(pref.get("games_library_locale", "en_US")));
+        pref.put("games_library_locale", "en-US");
+        Locale.setDefault(new Locale(Locale.forLanguageTag(pref.get("games_library_locale", "en-US")).toLanguageTag()));
         reloadGUI();
     }
 
     @FXML
     void menuItemLanguageGerman_onAction() {
-        pref.put("games_library_locale", "de");
-        Locale.setDefault(new Locale(pref.get("games_library_locale", "en_US")));
+        pref.put("games_library_locale", "de-DE");
+        Locale.setDefault(new Locale(pref.get("games_library_locale", "en-US")));
         reloadGUI();
     }
 
     @FXML
     void menuItemLanguagePolish_onAction() {
-        pref.put("games_library_locale", "pl");
-        Locale.setDefault(new Locale(pref.get("games_library_locale", "en_US")));
+        pref.put("games_library_locale", "pl-PL");
+        Locale.setDefault(new Locale(pref.get("games_library_locale", "en-US")));
         reloadGUI();
     }
 
     @FXML
     void menuItemLanguageFrench_onAction() {
-        pref.put("games_library_locale", "fr");
-        Locale.setDefault(new Locale(pref.get("games_library_locale", "en_US")));
+        pref.put("games_library_locale", "fr-FR");
+        Locale.setDefault(new Locale(pref.get("games_library_locale", "en-US")));
+        reloadGUI();
+    }
+
+    @FXML
+    void menuItemLanguageBritishEnglish_onAction() {
+        pref.put("games_library_locale", "en-GB");
+        Locale.setDefault(new Locale(pref.get("games_library_locale", "en-US")));
         reloadGUI();
     }
 
@@ -342,17 +356,16 @@ public class MainController implements Initializable {
             labelDetailsProducer.setText(selectedGame.getProducer());
             labelDetailsPublisher.setText(selectedGame.getPublisher());
 
-            String locale = pref.get("games_library_locale", "en_US");
-            Locale currentLocale = new Locale(locale);
-
-            DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.SHORT, currentLocale);
-            if (locale.equals("en_US")) {
+            String locale = pref.get("games_library_locale", "en-US");
+            DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.SHORT, Locale.forLanguageTag(pref
+                    .get("games_library_locale", "en-US")));
+            if (locale.equals("en-US")) {
                 String releasedDate = dateFormat.format(selectedGame.getReleaseDate())
-                        .substring(0, dateFormat.format(selectedGame.getReleaseDate()).lastIndexOf(' '));
-                labelDetailsReleaseDate.setText(releasedDate.substring(0, releasedDate.lastIndexOf(' ')));
+                        .substring(0, dateFormat.format(selectedGame.getReleaseDate()).lastIndexOf(" "));
+                labelDetailsReleaseDate.setText(releasedDate.substring(0, releasedDate.lastIndexOf(" ")));
             } else
                 labelDetailsReleaseDate.setText(dateFormat.format(selectedGame.getReleaseDate())
-                        .substring(0, dateFormat.format(selectedGame.getReleaseDate()).lastIndexOf(' ')));
+                        .substring(0, dateFormat.format(selectedGame.getReleaseDate()).lastIndexOf(" ")));
 
             labelDetailsPrice.setText(decimalFormat.format(selectedGame.getPrice()));
 
@@ -464,10 +477,11 @@ public class MainController implements Initializable {
 
     private void fillStatisticsComponents() {
         if (gamesLibrary != null && gamesLibrary.getGames().size() > 0) {
-            labelStatisticsTotalValueOfLibrary.setText(decimalFormat.format(gamesLibrary.getTotalLibraryPrice()) + " €");
+            labelStatisticsTotalValueOfLibrary.setText(decimalFormat.format(gamesLibrary.getTotalLibraryPrice())
+                    + " " + numberFormat.getCurrency().getSymbol());
 
             labelStatisticsCheapestGamePrice.setText(decimalFormat.format(gamesLibrary.getGames()
-                    .get(0).getPrice()) + " €");
+                    .get(0).getPrice()) + " " + numberFormat.getCurrency().getSymbol());
 
             labelStatisticsCheapestGameTitle.setText(gamesLibrary.getGames()
                     .get(0).getTitle());
@@ -475,7 +489,7 @@ public class MainController implements Initializable {
             imageViewStatisticsCheapestGame.setImage(new Image(gamesLibrary.getGames().get(0).getImagePath()));
 
             labelStatisticsMostExpensiveGamePrice.setText(decimalFormat.format(gamesLibrary.getGames()
-                    .get(gamesLibrary.getGames().size() - 1).getPrice()) + " €");
+                    .get(gamesLibrary.getGames().size() - 1).getPrice()) + " " + numberFormat.getCurrency().getSymbol());
 
             labelStatisticsMostExpensiveGameTitle.setText(gamesLibrary.getGames()
                     .get(gamesLibrary.getGames().size() - 1).getTitle());
@@ -489,7 +503,7 @@ public class MainController implements Initializable {
     private void reloadGUI() {
         FXMLLoader loader = new FXMLLoader();
         try {
-            Locale.setDefault(new Locale(pref.get("games_library_locale", "en_US")));
+            Locale.setDefault(new Locale(pref.get("games_library_locale", "en-US")));
             loader.setLocation(getClass().getClassLoader().getResource("fxml/main.fxml"));
             ResourceBundle resourceBundle = ResourceBundle.getBundle("bundles.messages");
             loader.setResources(resourceBundle);
@@ -527,14 +541,15 @@ public class MainController implements Initializable {
                 if (empty) {
                     setText(null);
                 } else {
-                    String locale = pref.get("games_library_locale", "en_US");
+                    String locale = pref.get("games_library_locale", "en-US");
                     DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT,
-                            new Locale(locale));
-                    if (locale.equals("en_US")) {
-                        String releasedDate = dateFormat.format(date).substring(0, dateFormat.format(date).lastIndexOf(' '));
-                        setText(releasedDate.substring(0, releasedDate.lastIndexOf(' ')));
+                            Locale.forLanguageTag(pref
+                                    .get("games_library_locale", "en-US")));
+                    if (locale.equals("en-US")) {
+                        String releasedDate = dateFormat.format(date).substring(0, dateFormat.format(date).lastIndexOf(" "));
+                        setText(releasedDate.substring(0, releasedDate.lastIndexOf(" ")));
                     } else
-                        setText(dateFormat.format(date).substring(0, dateFormat.format(date).lastIndexOf(' ')));
+                        setText(dateFormat.format(date).substring(0, dateFormat.format(date).lastIndexOf(" ")));
                 }
             }
         };
@@ -548,7 +563,7 @@ public class MainController implements Initializable {
                 if (empty) {
                     setText(null);
                 } else
-                    setText(decimalFormat.format(price) + numberFormat.getCurrency().getSymbol());
+                    setText(decimalFormat.format(price));
             }
         };
     }
