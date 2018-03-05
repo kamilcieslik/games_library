@@ -42,6 +42,13 @@
                </ImageView>
             </graphic>
          </MenuItem>
+         <MenuItem mnemonicParsing="false" onAction="#menuItemLanguageFrench_onAction" text="%main.menu_item.language_french">
+            <graphic>
+               <ImageView fitHeight="20.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                  <Image url="@../image/fr_flag.png"/>
+               </ImageView>
+            </graphic>
+         </MenuItem>
       </Menu>
    </MenuBar>
    <HBox alignment="CENTER" prefHeight="70.0" prefWidth="200.0" style="-fx-background-color: grey; -fx-border-width: 1; -fx-border-color: #000;" styleClass="appThemeContainer" stylesheets="@../css/application_style.css">
@@ -202,7 +209,7 @@
                            <Cursor fx:constant="HAND" />
                         </cursor>
                      </RadioButton>
-                     <RadioButton fx:id="radioButtonStatisticsMode" minHeight="17.0" minWidth="78.0" mnemonicParsing="false" onAction="#radioButtonStatisticsMode_onAction" prefHeight="17.0" prefWidth="84.0" text="%main.radio_button.statistics" textFill="WHITE">
+                     <RadioButton fx:id="radioButtonStatisticsMode" minHeight="17.0" minWidth="78.0" mnemonicParsing="false" onAction="#radioButtonStatisticsMode_onAction" prefHeight="17.0" prefWidth="98.0" text="%main.radio_button.statistics" textFill="WHITE">
                         <HBox.margin>
                            <Insets left="30.0" right="10.0" top="3.0" />
                         </HBox.margin>

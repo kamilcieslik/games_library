@@ -29,10 +29,14 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -46,6 +50,8 @@ public class MainController implements Initializable {
     private Library gamesLibrary;
     private ObservableList<Game> gameObservableList = FXCollections.observableArrayList();
     private String newGameImageUrl;
+    private DecimalFormat decimalFormat;
+    private NumberFormat numberFormat;
 
     @FXML
     private TableView<Game> tableViewGames;
@@ -115,6 +121,13 @@ public class MainController implements Initializable {
 
         imageViewDetailsGamePicture.fitHeightProperty().setValue(200);
         imageViewDetailsGamePicture.fitWidthProperty().setValue(0);
+
+        Locale.setDefault(new Locale(pref
+                .get("games_library_locale", "en_US")));
+        numberFormat = NumberFormat.getNumberInstance(Locale.getDefault());
+        decimalFormat = (DecimalFormat) numberFormat;
+        numberFormat = NumberFormat.getCurrencyInstance(Locale.ENGLISH);
+        decimalFormat.applyPattern("##.##");
     }
 
     @FXML
@@ -159,7 +172,6 @@ public class MainController implements Initializable {
                 calendar.set(Calendar.DAY_OF_MONTH, localDate.getDayOfMonth());
                 Date releaseDate = calendar.getTime();
 
-                NumberFormat numberFormat = NumberFormat.getInstance(new Locale(pref.get("games_library_locale", "en_US")));
                 Number number = numberFormat.parse(textFieldAddPrice.getText());
                 Double doubleValue = number.doubleValue();
 
@@ -278,6 +290,7 @@ public class MainController implements Initializable {
     @FXML
     void menuItemLanguageAmericanEnglish_onAction() {
         pref.put("games_library_locale", "en_US");
+
         Locale.setDefault(new Locale(pref.get("games_library_locale", "en_US")));
         reloadGUI();
     }
@@ -292,6 +305,13 @@ public class MainController implements Initializable {
     @FXML
     void menuItemLanguagePolish_onAction() {
         pref.put("games_library_locale", "pl");
+        Locale.setDefault(new Locale(pref.get("games_library_locale", "en_US")));
+        reloadGUI();
+    }
+
+    @FXML
+    void menuItemLanguageFrench_onAction() {
+        pref.put("games_library_locale", "fr");
         Locale.setDefault(new Locale(pref.get("games_library_locale", "en_US")));
         reloadGUI();
     }
@@ -334,8 +354,7 @@ public class MainController implements Initializable {
                 labelDetailsReleaseDate.setText(dateFormat.format(selectedGame.getReleaseDate())
                         .substring(0, dateFormat.format(selectedGame.getReleaseDate()).lastIndexOf(' ')));
 
-            NumberFormat numberFormat = NumberFormat.getInstance(currentLocale);
-            labelDetailsPrice.setText(numberFormat.format(selectedGame.getPrice()));
+            labelDetailsPrice.setText(decimalFormat.format(selectedGame.getPrice()));
 
             imageViewDetailsGamePicture.setImage(new Image(selectedGame.getImagePath()));
         }
@@ -445,11 +464,9 @@ public class MainController implements Initializable {
 
     private void fillStatisticsComponents() {
         if (gamesLibrary != null && gamesLibrary.getGames().size() > 0) {
-            labelStatisticsTotalValueOfLibrary.setText(NumberFormat.getInstance(new Locale(pref
-                    .get("games_library_locale", "en_US"))).format(gamesLibrary.getTotalLibraryPrice()) + " €");
+            labelStatisticsTotalValueOfLibrary.setText(decimalFormat.format(gamesLibrary.getTotalLibraryPrice()) + " €");
 
-            labelStatisticsCheapestGamePrice.setText(NumberFormat.getInstance(new Locale(pref
-                    .get("games_library_locale", "en_US"))).format(gamesLibrary.getGames()
+            labelStatisticsCheapestGamePrice.setText(decimalFormat.format(gamesLibrary.getGames()
                     .get(0).getPrice()) + " €");
 
             labelStatisticsCheapestGameTitle.setText(gamesLibrary.getGames()
@@ -457,8 +474,7 @@ public class MainController implements Initializable {
 
             imageViewStatisticsCheapestGame.setImage(new Image(gamesLibrary.getGames().get(0).getImagePath()));
 
-            labelStatisticsMostExpensiveGamePrice.setText(NumberFormat.getInstance(new Locale(pref
-                    .get("games_library_locale", "en_US"))).format(gamesLibrary.getGames()
+            labelStatisticsMostExpensiveGamePrice.setText(decimalFormat.format(gamesLibrary.getGames()
                     .get(gamesLibrary.getGames().size() - 1).getPrice()) + " €");
 
             labelStatisticsMostExpensiveGameTitle.setText(gamesLibrary.getGames()
@@ -484,7 +500,7 @@ public class MainController implements Initializable {
             Stage stage = Main.getMainStage();
             stage.setTitle(resourceBundle.getString("application.title"));
             Stage currentStage = (Stage) tableViewGames.getScene().getWindow();
-            Scene scene = new Scene(parent, currentStage.getWidth() - 16.0, currentStage.getHeight() - 42.5);
+            Scene scene = new Scene(parent, currentStage.getWidth() - 16.0, currentStage.getHeight() - 39.5);
             stage.setScene(scene);
         } catch (IOException ioEcx) {
             Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ioEcx);
@@ -531,9 +547,8 @@ public class MainController implements Initializable {
                 super.updateItem(price, empty);
                 if (empty) {
                     setText(null);
-                } else {
-                    setText(NumberFormat.getInstance(new Locale(pref.get("games_library_locale", "en_US"))).format(price));
-                }
+                } else
+                    setText(decimalFormat.format(price) + numberFormat.getCurrency().getSymbol());
             }
         };
     }
