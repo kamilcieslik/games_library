@@ -1,6 +1,7 @@
 package javafx.controller;
 
 import app.Main;
+import com.ibm.icu.text.PluralRules;
 import games_library.Game;
 import games_library.Library;
 import javafx.CustomMessageBox;
@@ -27,15 +28,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.ParseException;
+import java.text.*;
 import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -50,6 +45,7 @@ public class MainController implements Initializable {
     private String newGameImageUrl;
     private DecimalFormat decimalFormat;
     private NumberFormat numberFormat;
+    private PluralRules pluralRules;
 
     @FXML
     private TableView<Game> tableViewGames;
@@ -95,6 +91,9 @@ public class MainController implements Initializable {
         clearStatisticsComponents();
         initTableViews();
 
+        imageViewDetailsGamePicture.fitHeightProperty().setValue(200);
+        imageViewDetailsGamePicture.fitWidthProperty().setValue(0);
+
         resourceBundle = ResourceBundle.getBundle("bundles.messages");
         ListenerMethods listenerMethods = new ListenerMethods();
         textFieldAddTitle.textProperty().addListener((observable, oldValue, newValue) -> listenerMethods
@@ -117,15 +116,12 @@ public class MainController implements Initializable {
                         resourceBundle.getString("main.label.warnings.price"),
                         resourceBundle.getString("main.label.warnings_incorrect_format")));
 
-        imageViewDetailsGamePicture.fitHeightProperty().setValue(200);
-        imageViewDetailsGamePicture.fitWidthProperty().setValue(0);
-
-        Locale.setDefault(new Locale(pref
-                .get("games_library_locale", "en-US")));
-        numberFormat = NumberFormat.getCurrencyInstance(Locale.forLanguageTag(pref
-                .get("games_library_locale", "en-US")));
+        String currentLanguageTag = pref.get("games_library_locale", "en-US");
+        Locale.setDefault(new Locale(currentLanguageTag));
+        numberFormat = NumberFormat.getCurrencyInstance(Locale.forLanguageTag(currentLanguageTag));
         decimalFormat = (DecimalFormat) numberFormat;
         decimalFormat.applyPattern("##.##");
+        pluralRules = PluralRules.forLocale(Locale.getDefault());
 
         tableColumnPrice.setText(tableColumnPrice.getText() + " [" + numberFormat.getCurrency().getSymbol() + "]");
         labelDetailsPriceWithCurrency.setText(labelDetailsPriceWithCurrency.getText() + " [" +
@@ -493,6 +489,10 @@ public class MainController implements Initializable {
 
             imageViewStatisticsMostExpensiveGame.setImage(new Image(gamesLibrary.getGames()
                     .get(gamesLibrary.getGames().size() - 1).getImagePath()));
+
+            labelStatisticsNumberOfGames.setText(MessageFormat
+                    .format(resourceBundle.getString("number_of_games.plural_form." + pluralRules
+                            .select(gamesLibrary.getGames().size())), gamesLibrary.getGames().size()));
         } else
             clearStatisticsComponents();
     }

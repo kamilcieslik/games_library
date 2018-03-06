@@ -18,7 +18,8 @@ public class Library {
 
     public Library(Library library) {
         this.games = library.games;
-        this.totalLibraryPrice = library.totalLibraryPrice;
+        for (Game game : games)
+            totalLibraryPrice += game.getPrice();
         sortGamesByPrice();
     }
 
