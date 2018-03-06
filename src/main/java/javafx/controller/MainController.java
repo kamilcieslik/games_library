@@ -20,7 +20,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.springframework.stereotype.Controller;
 import xml_parser.GamesLibraryXmlParser;
 
 import javax.xml.bind.JAXBException;
@@ -41,7 +40,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
-@Controller
 public class MainController implements Initializable {
     private Preferences pref;
     private CustomMessageBox customMessageBox;
@@ -178,9 +176,8 @@ public class MainController implements Initializable {
                 calendar.set(Calendar.DAY_OF_MONTH, localDate.getDayOfMonth());
                 Date releaseDate = calendar.getTime();
 
-                NumberFormat format = NumberFormat.getInstance(new Locale(pref.get("games_library_locale", "en-US")));
-                Number number = format.parse(textFieldAddPrice.getText());
-                Double doubleValue = number.doubleValue();
+                Number number = numberFormat.parse(textFieldAddPrice.getText());
+                Double doubleValue = number.doubleValue() * Double.valueOf(resourceBundle.getString("currency.exchange_rate"));
 
                 Game game = new Game(textFieldAddTitle.getText(), textFieldAddProducer.getText(), textFieldAddPublisher.getText(),
                         releaseDate, doubleValue, newGameImageUrl);
@@ -244,7 +241,7 @@ public class MainController implements Initializable {
         if (file != null) {
             GamesLibraryXmlParser gamesLibraryXmlParser = new GamesLibraryXmlParser();
             try {
-                gamesLibrary = gamesLibraryXmlParser.readGamesLibrary(file);
+                gamesLibrary = new Library(gamesLibraryXmlParser.readGamesLibrary(file));
                 gameObservableList.clear();
                 gameObservableList.addAll(gamesLibrary.getGames());
                 fillStatisticsComponents();
@@ -367,7 +364,7 @@ public class MainController implements Initializable {
                 labelDetailsReleaseDate.setText(dateFormat.format(selectedGame.getReleaseDate())
                         .substring(0, dateFormat.format(selectedGame.getReleaseDate()).lastIndexOf(" ")));
 
-            labelDetailsPrice.setText(decimalFormat.format(selectedGame.getPrice()));
+            labelDetailsPrice.setText(decimalFormat.format(selectedGame.getPrice() / Double.valueOf(resourceBundle.getString("currency.exchange_rate"))));
 
             imageViewDetailsGamePicture.setImage(new Image(selectedGame.getImagePath()));
         }
@@ -477,11 +474,11 @@ public class MainController implements Initializable {
 
     private void fillStatisticsComponents() {
         if (gamesLibrary != null && gamesLibrary.getGames().size() > 0) {
-            labelStatisticsTotalValueOfLibrary.setText(decimalFormat.format(gamesLibrary.getTotalLibraryPrice())
+            labelStatisticsTotalValueOfLibrary.setText(decimalFormat.format(gamesLibrary.getTotalLibraryPrice() / Double.valueOf(resourceBundle.getString("currency.exchange_rate")))
                     + " " + numberFormat.getCurrency().getSymbol());
 
             labelStatisticsCheapestGamePrice.setText(decimalFormat.format(gamesLibrary.getGames()
-                    .get(0).getPrice()) + " " + numberFormat.getCurrency().getSymbol());
+                    .get(0).getPrice() / Double.valueOf(resourceBundle.getString("currency.exchange_rate"))) + " " + numberFormat.getCurrency().getSymbol());
 
             labelStatisticsCheapestGameTitle.setText(gamesLibrary.getGames()
                     .get(0).getTitle());
@@ -489,7 +486,7 @@ public class MainController implements Initializable {
             imageViewStatisticsCheapestGame.setImage(new Image(gamesLibrary.getGames().get(0).getImagePath()));
 
             labelStatisticsMostExpensiveGamePrice.setText(decimalFormat.format(gamesLibrary.getGames()
-                    .get(gamesLibrary.getGames().size() - 1).getPrice()) + " " + numberFormat.getCurrency().getSymbol());
+                    .get(gamesLibrary.getGames().size() - 1).getPrice() / Double.valueOf(resourceBundle.getString("currency.exchange_rate"))) + " " + numberFormat.getCurrency().getSymbol());
 
             labelStatisticsMostExpensiveGameTitle.setText(gamesLibrary.getGames()
                     .get(gamesLibrary.getGames().size() - 1).getTitle());
@@ -563,7 +560,7 @@ public class MainController implements Initializable {
                 if (empty) {
                     setText(null);
                 } else
-                    setText(decimalFormat.format(price));
+                    setText(decimalFormat.format(price / Double.valueOf(resourceBundle.getString("currency.exchange_rate"))));
             }
         };
     }

@@ -16,21 +16,23 @@ public class Library {
     public Library() {
     }
 
+    public Library(Library library) {
+        this.games = library.games;
+        this.totalLibraryPrice = library.totalLibraryPrice;
+        sortGamesByPrice();
+    }
+
     public Library(List<Game> games, Double totalLibraryPrice) {
         this.games = games;
         this.totalLibraryPrice = totalLibraryPrice;
-
-        games.sort((a, b) -> a.getPrice() < b.getPrice()
-                ? -1 : a.getPrice().equals(b.getPrice()) ? 0 : 1);
+        sortGamesByPrice();
     }
 
     public Library(List<Game> games) {
         this.games = games;
         for (Game game : games)
             totalLibraryPrice += game.getPrice();
-
-        games.sort((a, b) -> a.getPrice() < b.getPrice()
-                ? -1 : a.getPrice().equals(b.getPrice()) ? 0 : 1);
+        sortGamesByPrice();
     }
 
     public List<Game> getGames() {
@@ -42,9 +44,7 @@ public class Library {
         totalLibraryPrice = 0d;
         for (Game game : games)
             totalLibraryPrice += game.getPrice();
-
-        games.sort((a, b) -> a.getPrice() < b.getPrice()
-                ? -1 : a.getPrice().equals(b.getPrice()) ? 0 : 1);
+        sortGamesByPrice();
     }
 
     public Double getTotalLibraryPrice() {
@@ -56,14 +56,17 @@ public class Library {
             games = new ArrayList<>();
         games.add(game);
         totalLibraryPrice += game.getPrice();
-
-        games.sort((a, b) -> a.getPrice() < b.getPrice()
-                ? -1 : a.getPrice().equals(b.getPrice()) ? 0 : 1);
+        sortGamesByPrice();
     }
 
     public void deleteGame(Game game) {
         totalLibraryPrice -= game.getPrice();
         games.remove(game);
+    }
+
+    private void sortGamesByPrice() {
+        this.games.sort((a, b) -> a.getPrice() < b.getPrice()
+                ? -1 : a.getPrice().equals(b.getPrice()) ? 0 : 1);
     }
 
     @Override
