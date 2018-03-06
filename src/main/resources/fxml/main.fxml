@@ -20,7 +20,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/8.0.162" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafx.controller.MainController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafx.controller.MainController">
    <MenuBar>
       <Menu mnemonicParsing="false" text="%main.menu.language">
          <MenuItem mnemonicParsing="false" onAction="#menuItemLanguagePolish_onAction" text="%main.menu_item.language_polish">
@@ -38,7 +38,7 @@
          <MenuItem mnemonicParsing="false" onAction="#menuItemLanguageBritishEnglish_onAction" text="%main.menu_item.language_british">
             <graphic>
                <ImageView fitHeight="20.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                  <Image url="@../image/gb_flag.png"/>
+                  <Image url="@../image/gb_flag.png" />
                </ImageView>
             </graphic>
          </MenuItem>
@@ -62,12 +62,20 @@
       <VBox.margin>
          <Insets left="10.0" right="10.0" top="10.0" />
       </VBox.margin>
-      <ImageView fitHeight="124.0" fitWidth="259.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="imageViewFlag" fitHeight="30.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" style="-fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.7) , 15, 0.0 , 0 , 2 );">
          <HBox.margin>
-            <Insets bottom="5.0" top="5.0" />
+            <Insets left="30.0" />
          </HBox.margin>
-         <Image url="@../image/logo_title_right.png" />
+         <Image url="@../image/fr_flag.png" />
       </ImageView>
+      <Region maxHeight="1.0" minHeight="1.0" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+      <ImageView fitHeight="124.0" fitWidth="259.0" pickOnBounds="true" preserveRatio="true">
+         <Image url="@../image/logo_title_right.png" />
+         <HBox.margin>
+            <Insets left="-60.0" />
+         </HBox.margin>
+      </ImageView>
+      <Region maxHeight="1.0" minHeight="1.0" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
    </HBox>
    <HBox prefHeight="20.0" prefWidth="1600.0" style="-fx-background-color: #000; -fx-effect: dropshadow(three-pass-box,  grey, 15, 0.5, 0, 1);">
       <VBox.margin>
@@ -548,7 +556,7 @@
                                     <Insets bottom="10.0" top="10.0" />
                                  </VBox.margin>
                                  <cursor>
-                                    <Cursor fx:constant="HAND" />
+                                    <Cursor fx:constant="DEFAULT" />
                                  </cursor>
                                  <Image url="@../image/no_game.png" />
                               </ImageView>
@@ -588,7 +596,7 @@
                                     <Insets bottom="10.0" top="10.0" />
                                  </VBox.margin>
                                  <cursor>
-                                    <Cursor fx:constant="HAND" />
+                                    <Cursor fx:constant="DEFAULT" />
                                  </cursor>
                                  <Image url="@../image/no_game.png" />
                               </ImageView>

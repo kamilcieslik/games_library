@@ -67,7 +67,7 @@ public class MainController implements Initializable {
             labelStatisticsCheapestGameTitle, labelStatisticsCheapestGamePrice, labelDetailsPriceWithCurrency;
     @FXML
     private ImageView imageViewDetailsGamePicture, imageViewAddFrontCover, imageViewStatisticsCheapestGame,
-            imageViewStatisticsMostExpensiveGame;
+            imageViewStatisticsMostExpensiveGame, imageViewFlag;
     @FXML
     private TextField textFieldAddTitle, textFieldAddProducer, textFieldAddPublisher, textFieldAddPrice;
 
@@ -90,9 +90,6 @@ public class MainController implements Initializable {
         clearAddGameComponents(true);
         clearStatisticsComponents();
         initTableViews();
-
-        imageViewDetailsGamePicture.fitHeightProperty().setValue(200);
-        imageViewDetailsGamePicture.fitWidthProperty().setValue(0);
 
         resourceBundle = ResourceBundle.getBundle("bundles.messages");
         ListenerMethods listenerMethods = new ListenerMethods();
@@ -123,6 +120,7 @@ public class MainController implements Initializable {
         decimalFormat.applyPattern("##.##");
         pluralRules = PluralRules.forLocale(Locale.getDefault());
 
+        initImageViewsProperties();
         tableColumnPrice.setText(tableColumnPrice.getText() + " [" + numberFormat.getCurrency().getSymbol() + "]");
         labelDetailsPriceWithCurrency.setText(labelDetailsPriceWithCurrency.getText() + " [" +
                 numberFormat.getCurrency().getSymbol() + "]:");
@@ -528,6 +526,14 @@ public class MainController implements Initializable {
         tableColumnPrice.setCellFactory(col -> localDoubleFormat());
 
         tableViewGames.setItems(gameObservableList);
+    }
+
+    private void initImageViewsProperties() {
+        imageViewDetailsGamePicture.fitHeightProperty().setValue(200);
+        imageViewDetailsGamePicture.fitWidthProperty().setValue(0);
+        imageViewFlag.fitHeightProperty().setValue(33);
+        imageViewFlag.fitWidthProperty().setValue(50);
+        imageViewFlag.setImage(new Image(resourceBundle.getString("main.image_view.language")));
     }
 
     private TableCell<Game, Date> localDateFormat() {
