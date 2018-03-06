@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 public class WelcomeBannerController implements Initializable {
-    private static final int PROGRESS_BAR_SECONDS = 1;
+    private static final int PROGRESS_BAR_SECONDS = 3;
     @FXML
     private ProgressBar progressBarAppLoading;
 
