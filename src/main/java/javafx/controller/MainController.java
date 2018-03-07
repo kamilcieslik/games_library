@@ -91,7 +91,21 @@ public class MainController implements Initializable {
         clearStatisticsComponents();
         initTableViews();
 
-        resourceBundle = ResourceBundle.getBundle("bundles.messages");
+        String currentLanguageTag = pref.get("games_library_locale", "en-US");
+        Locale.setDefault(new Locale(currentLanguageTag));
+        resourceBundle = ResourceBundle.getBundle("bundles.messages",
+                Locale.forLanguageTag(currentLanguageTag));
+        numberFormat = NumberFormat.getCurrencyInstance(Locale.forLanguageTag(currentLanguageTag));
+        decimalFormat = (DecimalFormat) numberFormat;
+        decimalFormat.applyPattern("##.##");
+        pluralRules = PluralRules.forLocale(Locale.getDefault());
+
+        tableColumnPrice.setText(tableColumnPrice.getText() + " [" + numberFormat.getCurrency().getSymbol() + "]");
+        labelDetailsPriceWithCurrency.setText(labelDetailsPriceWithCurrency.getText() + " [" +
+                numberFormat.getCurrency().getSymbol() + "]:");
+        labelAddPriceWithCurrency.setText(labelAddPriceWithCurrency.getText() + " [" +
+                numberFormat.getCurrency().getSymbol() + "]:");
+
         ListenerMethods listenerMethods = new ListenerMethods();
         textFieldAddTitle.textProperty().addListener((observable, oldValue, newValue) -> listenerMethods
                 .changeLabelTextField(withoutSpacesAtStartAndAndPattern, textFieldAddTitle, labelAddTitle,
@@ -113,19 +127,7 @@ public class MainController implements Initializable {
                         resourceBundle.getString("main.label.warnings.price"),
                         resourceBundle.getString("main.label.warnings_incorrect_format")));
 
-        String currentLanguageTag = pref.get("games_library_locale", "en-US");
-        Locale.setDefault(new Locale(currentLanguageTag));
-        numberFormat = NumberFormat.getCurrencyInstance(Locale.forLanguageTag(currentLanguageTag));
-        decimalFormat = (DecimalFormat) numberFormat;
-        decimalFormat.applyPattern("##.##");
-        pluralRules = PluralRules.forLocale(Locale.getDefault());
-
         initImageViewsProperties();
-        tableColumnPrice.setText(tableColumnPrice.getText() + " [" + numberFormat.getCurrency().getSymbol() + "]");
-        labelDetailsPriceWithCurrency.setText(labelDetailsPriceWithCurrency.getText() + " [" +
-                numberFormat.getCurrency().getSymbol() + "]:");
-        labelAddPriceWithCurrency.setText(labelAddPriceWithCurrency.getText() + " [" +
-                numberFormat.getCurrency().getSymbol() + "]:");
     }
 
     @FXML
@@ -490,7 +492,7 @@ public class MainController implements Initializable {
 
             labelStatisticsNumberOfGames.setText(MessageFormat
                     .format(resourceBundle.getString("number_of_games.plural_form." + pluralRules
-                            .select(gamesLibrary.getGames().size())), gamesLibrary.getGames().size()));
+                            .select(gamesLibrary.getGames().size())), gamesLibrary.getGames().size(), Locale.getDefault()));
         } else
             clearStatisticsComponents();
     }
@@ -500,7 +502,7 @@ public class MainController implements Initializable {
         try {
             Locale.setDefault(new Locale(pref.get("games_library_locale", "en-US")));
             loader.setLocation(getClass().getClassLoader().getResource("fxml/main.fxml"));
-            ResourceBundle resourceBundle = ResourceBundle.getBundle("bundles.messages");
+            ResourceBundle resourceBundle = ResourceBundle.getBundle("bundles.messages", Locale.forLanguageTag(pref.get("games_library_locale", "en-US")));
             loader.setResources(resourceBundle);
             loader.load();
             MainController display = loader.getController();

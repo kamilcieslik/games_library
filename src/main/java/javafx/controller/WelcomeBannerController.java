@@ -55,7 +55,8 @@ public class WelcomeBannerController implements Initializable {
                     Preferences pref = Preferences.userRoot();
                     Locale.setDefault(new Locale(pref.get("games_library_locale", "en-US")));
                     loader.setLocation(getClass().getClassLoader().getResource("fxml/main.fxml"));
-                    ResourceBundle resourceBundle = ResourceBundle.getBundle("bundles.messages");
+                    ResourceBundle resourceBundle = ResourceBundle.getBundle("bundles.messages",
+                            Locale.forLanguageTag(pref.get("games_library_locale", "en-US")));
                     loader.setResources(resourceBundle);
                     loader.load();
                     Parent parent = loader.getRoot();
